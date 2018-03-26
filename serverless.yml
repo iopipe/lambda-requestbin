@@ -1,0 +1,18 @@
+service:
+  name: requestbin
+
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+functions:
+  requestbin:
+    handler: index.handler 
+    events:
+      - http:
+          method: any
+          path: /
