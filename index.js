@@ -18,8 +18,8 @@ export const getRequestJwt = IOpipe((event, context, callback) => {
 // eslint-disable-next-line import/prefer-default-export
 export const handler = IOpipe((event, context, callback) => {
   var pathJwt = event.path;
-  jwt.verify(pathJwt, PRIVATE_KEY, (err, decodedJwt)) {
-    if err return callback("Error in pathJwt");
+  jwt.verify(pathJwt, PRIVATE_KEY, (err, decodedJwt) => {
+    if (err) return callback("Error in pathJwt");
  
     var encryptedRequest = encrypt(event, decodedJwt.aud);
     const p = new Promise((resolve) => {
@@ -37,5 +37,5 @@ export const handler = IOpipe((event, context, callback) => {
         event,
       }))
       .catch(e => callback(e));
-  }
+  });
 });
