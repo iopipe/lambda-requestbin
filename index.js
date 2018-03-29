@@ -1,6 +1,10 @@
 import iopipe from '@iopipe/iopipe'
 import aws from 'aws-sdk'
+const jsonwebtoken = require('jsonwebtoken');
+const fs = require('fs');
+const PRIVATE_KEY = require('./key');
 
+//const PRIVATE_KEY = fs.readFileSync('./key.pem');
 const IOpipe = iopipe();
 const S3 = new aws.S3();
 
@@ -12,13 +16,13 @@ function encrypt () {
 /* website will generate pub key, send to getKey
    which will return a JWT for use in sending request */
 export const getRequestJwt = IOpipe((event, context, callback) => {
-  callback(null, jwt.sign(event.body, PRIVATE_KEY));
+  callback(null, jsonwebtoken.sign(event.body, PRIVATE_KEY));
 });
 
 // eslint-disable-next-line import/prefer-default-export
 export const handler = IOpipe((event, context, callback) => {
   var pathJwt = event.path;
-  jwt.verify(pathJwt, PRIVATE_KEY, (err, decodedJwt) => {
+  jsonwebtoken.verify(pathJwt, PRIVATE_KEY, (err, decodedJwt) => {
     if (err) return callback("Error in pathJwt");
  
     var encryptedRequest = encrypt(event, decodedJwt.aud);

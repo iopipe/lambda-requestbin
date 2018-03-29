@@ -1,9 +1,10 @@
 import iopipe from '@iopipe/iopipe'
-import 'jsonwebtoken'
+const jsonwebtoken = require('jsonwebtoken');
+const PRIVATE_KEY = require('./key');
 import _ from 'lodash'
 
+
 const IOpipe = iopipe();
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 export const handler = IOpipe((event, context, callback) => {
   console.log(event);
