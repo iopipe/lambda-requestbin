@@ -1,5 +1,5 @@
 import iopipe from '@iopipe/iopipe'
-import jsonwebtoken as jwt from 'jsonwebtoken'
+import 'jsonwebtoken'
 import _ from 'lodash'
 
 const IOpipe = iopipe();
@@ -10,10 +10,10 @@ export const handler = IOpipe((event, context, callback) => {
   var uri = event[0].request.uri;
   var authHeader = _.get(event[0].request.headers,
     'authorization',
-    { [ { value: '' } ] }
+    [ { value: '' } ]
   )[0].value;
 
-  jwt.verify(authHeader, PRIVATE_KEY, {
+  jsonwebtoken.verify(authHeader, PRIVATE_KEY, {
     audience: uri,
   }, (err, decodedJwt) => {
     if (err) return callback(err, { status: 401 });

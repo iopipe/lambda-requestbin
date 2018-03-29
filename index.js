@@ -33,9 +33,13 @@ export const handler = IOpipe((event, context, callback) => {
       );
     });
     p
-      .then(() => callback(null, {
-        event,
-      }))
+      .then(() => callback(null, 
+        {
+            "isBase64Encoded": false,
+            "statusCode": 200,
+            "body": "Hello RequestBin!"
+        }
+      ))
       .catch(e => callback(e));
   });
 });

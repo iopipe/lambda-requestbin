@@ -11,6 +11,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.0",
+    "serverless-plugin-cloudfront-lambda-edge": "1.0.0",
     "serverless-webpack": "^3.1.2",
     "webpack": "^3.11.0"
   },
@@ -22,6 +23,7 @@
     "@iopipe/iopipe": "^1.6.0",
     "aws-sdk": "^2.213.1",
     "babel": "^6.23.0",
+    "jsonwebtoken": "^8.2.0",
     "serverless-plugin-iopipe": "^1.2.0"
   }
 }
