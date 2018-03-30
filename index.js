@@ -1,10 +1,10 @@
 import iopipe from '@iopipe/iopipe'
+
 import aws from 'aws-sdk'
 const jsonwebtoken = require('jsonwebtoken');
 const fs = require('fs');
 const PRIVATE_KEY = require('./key');
 
-//const PRIVATE_KEY = fs.readFileSync('./key.pem');
 const IOpipe = iopipe();
 const S3 = new aws.S3();
 
