@@ -5,7 +5,11 @@ const jsonwebtoken = require('jsonwebtoken');
 const fs = require('fs');
 const PRIVATE_KEY = require('./key');
 
-const IOpipe = iopipe();
+const iopipe_profiler = require('@iopipe/profiler');
+const IOpipe = iopipe({
+  token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDAyZTQzNy0wNzIyLTQ0ZDktOGUyNy1jMGFjMjc2MzgxZTQiLCJqdGkiOiJmYTQzMDQxMi0zYThkLTQ5MzgtODA4My00YWIxODRjNmZmZjEiLCJpYXQiOjE1MDAzODgzMjgsImlzcyI6Imh0dHBzOi8vaW9waXBlLmNvbSIsImF1ZCI6Imh0dHBzOi8vaW9waXBlLmNvbSxodHRwczovL21ldHJpY3MtYXBpLmlvcGlwZS5jb20vZXZlbnQvLGh0dHBzOi8vZ3JhcGhxbC5pb3BpcGUuY29tIn0.Iez7L1pRsC1gk50H6-Qh99ZaduFfCixAPxgkfPmpElI",
+  plugins: [ iopipe_profiler({ enabled: true }) ]
+});
 const S3 = new aws.S3();
 
 function encrypt () {
@@ -23,7 +27,10 @@ export const getRequestJwt = IOpipe((event, context, callback) => {
 export const handler = IOpipe((event, context, callback) => {
   var pathJwt = event.path;
   jsonwebtoken.verify(pathJwt, PRIVATE_KEY, (err, decodedJwt) => {
-    if (err) return callback("Error in pathJwt");
+    if (err) return callback(null, {
+      "statusCode": 400,
+      "body": "Error in pathJwt"
+    });
  
     var encryptedRequest = encrypt(event, decodedJwt.aud);
     const p = new Promise((resolve) => {
@@ -39,7 +46,6 @@ export const handler = IOpipe((event, context, callback) => {
     p
       .then(() => callback(null, 
         {
-            "isBase64Encoded": false,
             "statusCode": 200,
             "body": "Hello RequestBin!"
         }

@@ -21,9 +21,11 @@
   "keywords": [],
   "dependencies": {
     "@iopipe/iopipe": "^1.6.0",
+    "@iopipe/profiler": "^1.0.0",
     "aws-sdk": "^2.213.1",
     "babel": "^6.23.0",
     "jsonwebtoken": "^8.2.0",
+    "node-loader": "^0.6.0",
     "serverless-plugin-iopipe": "^1.2.0"
   }
 }
