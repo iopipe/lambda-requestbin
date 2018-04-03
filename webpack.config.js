@@ -11,6 +11,12 @@ module.exports = {
       loaders: ['babel-loader', 'node-loader'],
       include: __dirname
     }],
+    rules: [
+      {
+        test: /\.node$/,
+        use: 'node-loader'
+      }
+    ]
   },
   output: {
     libraryTarget: 'commonjs',

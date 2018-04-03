@@ -14,12 +14,18 @@ provider:
   runtime: nodejs6.10
 
 functions:
+  getrequesturl:
+    handler: index.getRequestURL
+    events:
+      - http:
+          method: get
+          path: /geturl
   requestbin:
-    handler: index.handler 
+    handler: index.handleRequest
     events:
       - http:
           method: any
-          path: /
+          path: /req
   s3auth:
     handler: s3auth.handler
     events:
