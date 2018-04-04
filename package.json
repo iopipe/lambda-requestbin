@@ -11,6 +11,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.0",
+    "serverless-domain-manager": "^2.3.6",
     "serverless-plugin-cloudfront-lambda-edge": "1.0.0",
     "serverless-webpack": "^3.1.2",
     "webpack": "^3.11.0"

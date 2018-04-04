@@ -5,6 +5,7 @@ service:
 plugins:
   - serverless-webpack
   - serverless-plugin-cloudfront-lambda-edge
+  - serverless-domain-manager
 
 environment:
   IOPIPE_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDAyZTQzNy0wNzIyLTQ0ZDktOGUyNy1jMGFjMjc2MzgxZTQiLCJqdGkiOiJmYTQzMDQxMi0zYThkLTQ5MzgtODA4My00YWIxODRjNmZmZjEiLCJpYXQiOjE1MDAzODgzMjgsImlzcyI6Imh0dHBzOi8vaW9waXBlLmNvbSIsImF1ZCI6Imh0dHBzOi8vaW9waXBlLmNvbSxodHRwczovL21ldHJpY3MtYXBpLmlvcGlwZS5jb20vZXZlbnQvLGh0dHBzOi8vZ3JhcGhxbC5pb3BpcGUuY29tIn0.Iez7L1pRsC1gk50H6-Qh99ZaduFfCixAPxgkfPmpElI
@@ -32,3 +33,10 @@ functions:
       - lambdaAtEdge:
           distribution: 'requestbin'
           eventType: 'origin-request'
+
+custom:
+  customDomain:
+    domainName: request.lol
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
