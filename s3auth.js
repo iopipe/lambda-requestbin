@@ -1,6 +1,6 @@
 import iopipe from '@iopipe/iopipe'
 const jsonwebtoken = require('jsonwebtoken');
-const PRIVATE_KEY = require('./key');
+const keys = require('./keys');
 import _ from 'lodash'
 
 
@@ -14,7 +14,7 @@ export const handler = IOpipe((event, context, callback) => {
     [ { value: '' } ]
   )[0].value;
 
-  jsonwebtoken.verify(authHeader, PRIVATE_KEY, {
+  jsonwebtoken.verify(authHeader, keys.public, {
     audience: uri,
   }, (err, decodedJwt) => {
     if (err) return callback(err, { status: 401 });

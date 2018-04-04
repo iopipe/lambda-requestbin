@@ -3,7 +3,7 @@ import iopipe from '@iopipe/iopipe'
 import aws from 'aws-sdk'
 const jsonwebtoken = require('jsonwebtoken');
 const fs = require('fs');
-const PRIVATE_KEY = require('./key');
+const keys = require('./keys');
 
 //const iopipe_profiler = require('@iopipe/profiler');
 const IOpipe = iopipe({
@@ -22,15 +22,20 @@ function encrypt (data, key) {
 /* website will generate pub key, send to getKey
    which will return a JWT for use in sending request */
 export const getRequestURL = IOpipe((event, context, callback) => {
-  jsonwebtoken.sign({ data: event.body }, PRIVATE_KEY, (err, token) => {
+  jsonwebtoken.sign(
+      { data: 'hello world' },
+      keys.private,
+      { algorithm: 'RS256' },
+      (err, token) => {
     if (err) {
       context.iopipe.log("error", err);
+      context.iopipe.log("token", token);
       callback(null, { "statusCode": "400", "body": err });
       return;
     }
     callback(null, {
       "statusCode": 200,
-      "body": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/${token}`
+      "body": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/dev/req/${token}`
     });
   });
 });
@@ -38,32 +43,34 @@ export const getRequestURL = IOpipe((event, context, callback) => {
 // eslint-disable-next-line import/prefer-default-export
 export const handleRequest = IOpipe((event, context, callback) => {
   console.log(event);
-  var pathJwt = event.path.substring(1);
-  jsonwebtoken.verify(pathJwt, PRIVATE_KEY, (err, decodedJwt) => {
-    if (err) return callback(null, {
-      "statusCode": 400,
-      "body": "Error in pathJwt"
-    });
+  var pathJwt = event.pathParameters.token;
+  jsonwebtoken.verify(pathJwt, keys.public,
+    { algorithms: [ 'RS256' ] },
+    (err, decodedJwt) => {
+      if (err) return callback(null, {
+        "statusCode": 400,
+        "body": `Error in pathJwt: ${err}`
+      });
 
-    /* We've received a user's request, encrypt and "bin" it!  */
-    var encryptedRequest = encrypt(event, decodedJwt.aud);
-    const p = new Promise((resolve) => {
-      S3.putObject(
-        {
-          Bucket: process.env.S3BUCKET,
-          Key: decodedJwt.aud,
-          Body: encryptedRequest
-        },
-        () => { resolve() }
-      );
-    });
-    p
-      .then(() => callback(null, 
-        {
-            "statusCode": 200,
-            "body": "Content accepted."
-        }
-      ))
-      .catch(e => callback(e));
+      /* We've received a user's request, encrypt and "bin" it!  */
+      var encryptedRequest = encrypt(event, decodedJwt.aud);
+      const p = new Promise((resolve) => {
+        S3.putObject(
+          {
+            Bucket: process.env.S3BUCKET,
+            Key: decodedJwt.aud,
+            Body: encryptedRequest
+          },
+          () => { resolve() }
+        );
+      });
+      p
+        .then(() => callback(null, 
+          {
+              "statusCode": 200,
+              "body": "Content accepted."
+          }
+        ))
+        .catch(e => callback(e));
   });
 });

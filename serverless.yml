@@ -25,7 +25,7 @@ functions:
     events:
       - http:
           method: any
-          path: /req
+          path: '/req/{token}'
   s3auth:
     handler: s3auth.handler
     events:
