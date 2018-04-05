@@ -1,9 +1,11 @@
 import iopipe from '@iopipe/iopipe'
 
-import aws from 'aws-sdk'
+//import aws from 'aws-sdk'
+const aws = require('aws-sdk');
 const jsonwebtoken = require('jsonwebtoken');
 const fs = require('fs');
 const keys = require('./keys');
+const crypto = require('crypto');
 
 //const iopipe_profiler = require('@iopipe/profiler');
 const IOpipe = iopipe({
@@ -14,7 +16,7 @@ const S3 = new aws.S3();
 
 /* A thing that should encrypt... but doesn't yet! */
 function encrypt (data, key) {
-  return data;
+  return JSON.stringify(data);
 }
 
 /* Endpoint that provides a JWT signed by us,
@@ -35,7 +37,7 @@ export const getRequestURL = IOpipe((event, context, callback) => {
     }
     callback(null, {
       "statusCode": 200,
-      "body": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/dev/req/${token}`
+      "body": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/dev/req/${token}\n`
     });
   });
 });
@@ -49,26 +51,31 @@ export const handleRequest = IOpipe((event, context, callback) => {
     (err, decodedJwt) => {
       if (err) return callback(null, {
         "statusCode": 400,
-        "body": `Error in pathJwt: ${err}`
+        "body": `Error in pathJwt: ${err}\n`
       });
 
       /* We've received a user's request, encrypt and "bin" it!  */
       var encryptedRequest = encrypt(event, decodedJwt.aud);
-      const p = new Promise((resolve) => {
+      const p = new Promise((resolve, reject) => {
+        var hash = crypto.createHash('sha256');
+        hash.update(pathJwt);
+
         S3.putObject(
           {
-            Bucket: process.env.S3BUCKET,
-            Key: decodedJwt.aud,
+            Bucket: process.env.S3BUCKET || "iopipe-requestbin",
+            Key: hash.digest('hex'),
             Body: encryptedRequest
           },
-          () => { resolve() }
+          (err) => {
+            (err) ? reject(err) : resolve();
+          }
         );
       });
       p
         .then(() => callback(null, 
           {
               "statusCode": 200,
-              "body": "Content accepted."
+              "body": "Content accepted.\n"
           }
         ))
         .catch(e => callback(e));
