@@ -63,7 +63,7 @@ export const handleRequest = IOpipe((event, context, callback) => {
         S3.putObject(
           {
             Bucket: process.env.S3BUCKET || "iopipe-requestbin",
-            Key: hash.digest('hex'),
+            Key: `${hash.digest('hex')}.json`,
             Body: encryptedRequest
           },
           (err) => {
