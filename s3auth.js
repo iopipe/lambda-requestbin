@@ -14,10 +14,10 @@ export const handler = IOpipe((event, context, callback) => {
     [ { value: '' } ]
   )[0].value;
 
-  jsonwebtoken.verify(authHeader, keys.public, {
-    audience: uri,
-  }, (err, decodedJwt) => {
-    if (err) return callback(err, { status: 401 });
-    callback(null, event);
-  })
+  jsonwebtoken.verify(authHeader, keys.public,
+    (err, decodedJwt) => {
+      if (err) return callback(err, { status: 401 });
+      callback(null, event);
+    }
+  )
 });
