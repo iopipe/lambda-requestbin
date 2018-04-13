@@ -54,16 +54,17 @@ export const handleRequest = IOpipe((event, context, callback) => {
         "body": `Error in pathJwt: ${err}\n`
       });
 
-      /* We've received a user's request, encrypt and "bin" it!  */
+     var hash = crypto.createHash('sha256');
+     hash.update(pathJwt);
+     var fileName = `${hash.digest('hex')}.json`;
+
+     /* We've received a user's request, encrypt and "bin" it!  */
       var encryptedRequest = encrypt(event, decodedJwt.aud);
       const p = new Promise((resolve, reject) => {
-        var hash = crypto.createHash('sha256');
-        hash.update(pathJwt);
-
         S3.putObject(
           {
             Bucket: process.env.S3BUCKET || "iopipe-requestbin",
-            Key: `${hash.digest('hex')}.json`,
+            Key: fileName,
             Body: encryptedRequest
           },
           (err) => {
@@ -74,8 +75,14 @@ export const handleRequest = IOpipe((event, context, callback) => {
       p
         .then(() => callback(null, 
           {
-              "statusCode": 200,
-              "body": "Content accepted.\n"
+              "statusCode": 202,
+              "headers": {
+                "location": [{
+                  name: "Location",
+                  key: fileName,
+                }]
+              },
+              "body": `Content accepted.\nLocation: ${fileName}\n`
           }
         ))
         .catch(e => callback(e));
