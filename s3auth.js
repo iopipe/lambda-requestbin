@@ -4,7 +4,9 @@ const keys = require('./keys');
 import _ from 'lodash'
 
 
-const IOpipe = iopipe();
+const IOpipe = iopipe({
+  token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDAyZTQzNy0wNzIyLTQ0ZDktOGUyNy1jMGFjMjc2MzgxZTQiLCJqdGkiOiJmYTQzMDQxMi0zYThkLTQ5MzgtODA4My00YWIxODRjNmZmZjEiLCJpYXQiOjE1MDAzODgzMjgsImlzcyI6Imh0dHBzOi8vaW9waXBlLmNvbSIsImF1ZCI6Imh0dHBzOi8vaW9waXBlLmNvbSxodHRwczovL21ldHJpY3MtYXBpLmlvcGlwZS5jb20vZXZlbnQvLGh0dHBzOi8vZ3JhcGhxbC5pb3BpcGUuY29tIn0.Iez7L1pRsC1gk50H6-Qh99ZaduFfCixAPxgkfPmpElI"
+});
 
 export const handler = IOpipe((event, context, callback) => {
   console.log(event);
@@ -21,7 +23,7 @@ export const handler = IOpipe((event, context, callback) => {
   jsonwebtoken.verify(authHeader[1], keys.public,
     (err, decodedJwt) => {
       if (err) return callback(err, { status: 401 });
-      callback(null, event);
+      callback(null, { status: 200, body: "request.lol/lol/lol" });
     }
   )
 });

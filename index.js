@@ -37,7 +37,7 @@ export const getRequestURL = IOpipe((event, context, callback) => {
     }
     callback(null, {
       "statusCode": 200,
-      "body": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/dev/req/${token}\n`
+      "body": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/req/${token}\n`
     });
   });
 });
