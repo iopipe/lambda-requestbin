@@ -9,7 +9,6 @@ const IOpipe = iopipe({
 });
 
 export const handler = IOpipe((event, context, callback) => {
-  console.log(event);
   var uri = event.Records[0].cf.request.uri;
   var authHeader = _.get(event.Records[0].cf.request.headers,
     'authorization',
@@ -22,8 +21,8 @@ export const handler = IOpipe((event, context, callback) => {
 
   jsonwebtoken.verify(authHeader[1], keys.public,
     (err, decodedJwt) => {
-      if (err) return callback(err, { status: 401 });
-      callback(null, { status: 200, body: "request.lol/lol/lol" });
+      if (err) return callback(null, { status: 401, body: err });
+      callback(null, event.Records[0].cf.request);
     }
   )
 });
