@@ -73,18 +73,21 @@ export const handleRequest = IOpipe((event, context, callback) => {
         );
       });
       p
-        .then(() => callback(null, 
-          {
-              "statusCode": 202,
-              "headers": {
+        .then(() => {
+          var response = {
+              "statusCode": 200,
+              /*"headers": {
                 "location": [{
                   name: "Location",
                   key: fileName,
                 }]
-              },
+              },*/
               "body": `Content accepted.\nLocation: ${fileName}\n`
-          }
-        ))
+          };
+          console.log(response);
+          context.iopipe.log("apigw-response", response);
+          callback(null, response);
+        })
         .catch(e => callback(e));
   });
 });
