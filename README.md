@@ -35,11 +35,9 @@ Specify S3 Bucket as Origin-- this is done in the wizard when creating CloudFron
 
 Associate Lambda Function for Viewer Request-- you'll use an ARN with an exact version number to associate.
 
-## How to make requests
+## Making Requests
 
-### Curl your lambda 
-
-#### Get a RequestBin:
+### Get a RequestBin:
 
 ```
 curl your-lambda-domain/geturl
@@ -56,7 +54,7 @@ This will return JSON in the following format:
 }
 ```
 
-# Use the RequestBin:
+### Use the RequestBin:
 
 1. Send request to `requestTo` url.
 2. Run the `requestFromCurl` command.
