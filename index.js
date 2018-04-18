@@ -35,9 +35,23 @@ export const getRequestURL = IOpipe((event, context, callback) => {
       callback(null, { "statusCode": "400", "body": err });
       return;
     }
+
+    var hash = crypto.createHash('sha256');
+    hash.update(token);
+    var fileName = `${hash.digest('hex')}.json`;
+
     callback(null, {
       "statusCode": 200,
-      "body": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/req/${token}\n`
+      "headers": {
+        "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+        "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+      },
+      "body": JSON.stringify({
+        "requestTo": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/req/${token}\n`,
+        "requestFrom": `https://response.lol/${fileName}`,
+        "requestFromToken": token,
+        "requestFromCurl": `curl -H 'Authorization: Bearer ${token}' https://response.lol/${fileName}`
+      }, null, 2)
     });
   });
 });
@@ -76,6 +90,10 @@ export const handleRequest = IOpipe((event, context, callback) => {
         .then(() => {
           var response = {
               "statusCode": 200,
+              "headers": {
+                "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+                "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+              },
               /*"headers": {
                 "location": [{
                   name: "Location",
