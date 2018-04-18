@@ -16,7 +16,7 @@ const S3 = new aws.S3();
 
 /* A thing that should encrypt... but doesn't yet! */
 function encrypt (data, key) {
-  return JSON.stringify(data);
+  return JSON.stringify(data, null, 2);
 }
 
 /* Endpoint that provides a JWT signed by us,
@@ -68,11 +68,11 @@ export const handleRequest = IOpipe((event, context, callback) => {
         "body": `Error in pathJwt: ${err}\n`
       });
 
-     var hash = crypto.createHash('sha256');
-     hash.update(pathJwt);
-     var fileName = `${hash.digest('hex')}.json`;
+      var hash = crypto.createHash('sha256');
+      hash.update(pathJwt);
+      var fileName = `${hash.digest('hex')}.json`;
 
-     /* We've received a user's request, encrypt and "bin" it!  */
+      /* We've received a user's request, encrypt and "bin" it!  */
       var encryptedRequest = encrypt(event, decodedJwt.aud);
       const p = new Promise((resolve, reject) => {
         S3.putObject(
@@ -89,18 +89,13 @@ export const handleRequest = IOpipe((event, context, callback) => {
       p
         .then(() => {
           var response = {
-              "statusCode": 200,
+              "statusCode": 201,
               "headers": {
-                "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-                "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+                "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+                "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+                "Location": `https://response.lol/${fileName}`,
               },
-              /*"headers": {
-                "location": [{
-                  name: "Location",
-                  key: fileName,
-                }]
-              },*/
-              "body": `Content accepted.\nLocation: ${fileName}\n`
+              "body": JSON.stringify({ savedTo: `https://response.lol/${fileName}` })
           };
           console.log(response);
           context.iopipe.log("apigw-response", response);
