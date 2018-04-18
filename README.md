@@ -37,33 +37,31 @@ Associate Lambda Function for Viewer Request-- you'll use an ARN with an exact v
 
 ## How to make requests
 
-### 1st way: using `eva`
+### Curl your lambda 
 
-Check out http://github.io/iopipe/eva for more details
-
-### 2nd way: using `curl`
-
-#### Curl your lambda 
+#### Get a RequestBin:
 
 ```
 curl your-lambda-domain/geturl
 ```
 
-This will return the Request Address (the URL you send requests to to capture results)
-
-#### Curl your response URL (retrieve your request)
+This will return JSON in the following format:
 
 ```
-curl [returned URL from previous step] 
+{
+  requestTo: "<https url>",
+  requestFrom: "<https url>",
+  requestFromToken: "<Bearer Token for Authorization Header>",
+  requestFromCurl: "<curl command that uses requestFrom url and bearer token>"
+}
 ```
 
-#### Curl CloudFront Domain
+# Use the RequestBin:
 
-```
-curl -H "Authorization: Bearer [the JWT included in the GetURL step]" your-cloudfront-domain/[return JSON filename]
-```
-This returns the request you wish to play back.
+1. Send request to `requestTo` url.
+2. Run the `requestFromCurl` command.
 
+If desiring to build an API consumer, make an HTTP GET request from the `requestFrom` url using an `Authoriation: Bearer <requestFromToken>` header.
 
 # License
 
