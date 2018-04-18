@@ -59,7 +59,7 @@ This will return JSON in the following format:
 1. Send request to `requestTo` url.
 2. Run the `requestFromCurl` command.
 
-If desiring to build an API consumer, make an HTTP GET request from the `requestFrom` url using an `Authoriation: Bearer <requestFromToken>` header.
+If desiring to build an API consumer, make an HTTP GET request from the `requestFrom` url using an `Authorization: Bearer <requestFromToken>` header.
 
 # License
 
