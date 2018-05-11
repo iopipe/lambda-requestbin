@@ -48,9 +48,9 @@ export const getRequestURL = IOpipe((event, context, callback) => {
       },
       "body": JSON.stringify({
         "requestTo": `${event.headers['X-Forwarded-Proto']}://${event.headers['Host']}/req/${token}\n`,
-        "requestFrom": `https://response.lol/${fileName}`,
+        "requestFrom": `${event.headers['X-Forwarded-Proto']}://${fileName}`,
         "requestFromToken": token,
-        "requestFromCurl": `curl -H 'Authorization: Bearer ${token}' https://response.lol/${fileName}`
+        "requestFromCurl": `curl -H 'Authorization: Bearer ${token}' ${event.headers['X-Forwarded-Proto']}://${fileName}`
       }, null, 2)
     });
   });
@@ -63,10 +63,13 @@ export const handleRequest = IOpipe((event, context, callback) => {
   jsonwebtoken.verify(pathJwt, keys.public,
     { algorithms: [ 'RS256' ] },
     (err, decodedJwt) => {
-      if (err) return callback(null, {
-        "statusCode": 400,
-        "body": `Error in pathJwt: ${err}\n`
-      });
+      if (err) {
+        context.iopipe.metric('JWT-error', true)        
+        return callback(null, {
+          "statusCode": 400,
+          "body": `Error in pathJwt: ${err}\n`
+        });
+      }
 
       var hash = crypto.createHash('sha256');
       hash.update(pathJwt);
