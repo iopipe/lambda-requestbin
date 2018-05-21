@@ -19,6 +19,8 @@ sudo npm i -g serverless
 
 ### Deploy via `sls`
 
+CHANGE THE BUCKET NAME
+
 Make sure you've [configured your AWS login with serverless framework](https://serverless.com/framework/docs/providers/aws/guide/quick-start/), then:
 
 ```
