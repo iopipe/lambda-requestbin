@@ -6,7 +6,7 @@ const keys = require('./keys');
 const crypto = require('crypto');
 
 const IOpipe = iopipe({
-  token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDAyZTQzNy0wNzIyLTQ0ZDktOGUyNy1jMGFjMjc2MzgxZTQiLCJqdGkiOiJmYTQzMDQxMi0zYThkLTQ5MzgtODA4My00YWIxODRjNmZmZjEiLCJpYXQiOjE1MDAzODgzMjgsImlzcyI6Imh0dHBzOi8vaW9waXBlLmNvbSIsImF1ZCI6Imh0dHBzOi8vaW9waXBlLmNvbSxodHRwczovL21ldHJpY3MtYXBpLmlvcGlwZS5jb20vZXZlbnQvLGh0dHBzOi8vZ3JhcGhxbC5pb3BpcGUuY29tIn0.Iez7L1pRsC1gk50H6-Qh99ZaduFfCixAPxgkfPmpElI",
+  token:"YOUR_IOPIPE_ACCESS_TOKEN",
 });
 const S3 = new aws.S3();
 
@@ -62,8 +62,7 @@ export const handleRequest = IOpipe((event, context, callback) => {
     { algorithms: [ 'RS256' ] },
     (err, decodedJwt) => {
       if (err) {
-        context.iopipe.metric('jwt-error', true);
-        context.iopipe.log('jwt-error', err);
+        context.iopipe.metric('jwt-error', err);
         return callback(null, {
           "statusCode": 400,
           "body": `Error in pathJwt: ${err}\n`
