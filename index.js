@@ -5,9 +5,7 @@ const fs = require('fs');
 const keys = require('./keys');
 const crypto = require('crypto');
 
-const IOpipe = iopipe({
-  token:"YOUR_IOPIPE_ACCESS_TOKEN",
-});
+const IOpipe = iopipe();
 const S3 = new aws.S3();
 
 /* A thing that should encrypt... but doesn't yet! */
