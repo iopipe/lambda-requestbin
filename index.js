@@ -74,7 +74,6 @@ export const handleRequest = IOpipe((event, context, callback) => {
       var fileName = `${hash.digest('hex')}.json`;
 
       /* We've received a user's request, encrypt and "bin" it!  */
-      context.iopipe.label('recieved-user-request');
       var encryptedRequest = encrypt(event, decodedJwt.aud);
       const p = new Promise((resolve, reject) => {
         context.iopipe.mark.start('bin-user-request-s3');
