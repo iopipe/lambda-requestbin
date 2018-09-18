@@ -7,19 +7,13 @@ package:
 # Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
-  - serverless-plugin-cloudfront-lambda-edge
-  - serverless-domain-manager
 
 custom:
-  customDomain:
-    domainName: request.lol
-    basePath: ''
-    stage: ${self:provider.stage}
-    createRoute53Record: true
-  bucket: iopipe-requestbin
+  bucket: MY_BUCKET-requestbin
+  IOPIPE_TOKEN: MY_ACCESS_TOKEN
 
 environment:
-  IOPIPE_TOKEN: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDAyZTQzNy0wNzIyLTQ0ZDktOGUyNy1jMGFjMjc2MzgxZTQiLCJqdGkiOiJmYTQzMDQxMi0zYThkLTQ5MzgtODA4My00YWIxODRjNmZmZjEiLCJpYXQiOjE1MDAzODgzMjgsImlzcyI6Imh0dHBzOi8vaW9waXBlLmNvbSIsImF1ZCI6Imh0dHBzOi8vaW9waXBlLmNvbSxodHRwczovL21ldHJpY3MtYXBpLmlvcGlwZS5jb20vZXZlbnQvLGh0dHBzOi8vZ3JhcGhxbC5pb3BpcGUuY29tIn0.Iez7L1pRsC1gk50H6-Qh99ZaduFfCixAPxgkfPmpElI"
+  IOPIPE_TOKEN: ${self:custom.IOPIPE_TOKEN}
   S3BUCKET: ${self:custom.bucket}
 
 provider:
@@ -50,10 +44,6 @@ functions:
   s3auth:
     handler: s3auth.handler
     memory: 128
-    events:
-      - lambdaAtEdge:
-          distribution: 'requestbin'
-          eventType: 'viewer-request'
 
 resources:
   Resources:

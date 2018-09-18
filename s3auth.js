@@ -1,7 +1,7 @@
-import iopipe from '@iopipe/iopipe'
+const iopipe = require('@iopipe/iopipe');
 const jsonwebtoken = require('jsonwebtoken');
 const keys = require('./keys');
-import _ from 'lodash'
+const _ = require('lodash');
 
 
 const IOpipe = iopipe({

@@ -17,7 +17,11 @@ npm i
 sudo npm i -g serverless
 ```
 
+You'll want to change the IOpipe access token on line 13 of `serverless.yml` with [your access token](https://dashboard.iopipe.com/install) (Log in if you don't see your access token).
+
 ### Deploy via `sls`
+
+Create an s3 bucket called `{your_app_name}-requestbin` and give the lambdas deployed by this project permission to PUT objects into those buckets as well as GET them. Then, set the environment variable in `serverless.yml` on line 12 called `custom.bucket` to the same name.
 
 Make sure you've [configured your AWS login with serverless framework](https://serverless.com/framework/docs/providers/aws/guide/quick-start/), then:
 
