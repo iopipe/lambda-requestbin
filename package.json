@@ -24,7 +24,7 @@
     "@iopipe/iopipe": "^1.7.0",
     "@iopipe/profiler": "^1.0.0",
     "@iopipe/trace": "^1.0.0",
-    "aws-sdk": "^2.213.1",
+    "aws-sdk": "^2.814.0",
     "babel": "^6.23.0",
     "jsonwebtoken": "^8.2.0",
     "node-loader": "^0.6.0",
